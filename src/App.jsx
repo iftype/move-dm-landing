@@ -9,9 +9,8 @@ import {
   Mic,
   Send,
   Smile,
+  X,
 } from 'lucide-react'
-
-const TARGET_SITE_URL = 'https://zaru-landing-1ymxjuovj-mocas-projects-e7b58534.vercel.app/'
 
 const firstChoices = [
   { id: 'soon', label: '응, 다음 달에 이사해', info: <>그럼 계약 전에 <strong>보증금 반환</strong>부터 확인해보자.<br />등기부와 선순위 보증금은 꼭 봐야 해.</> },
@@ -58,14 +57,74 @@ function ChoiceGroup({ eyebrow, title, choices, selectedId, onSelect }) {
   )
 }
 
-function LinkPreview() {
+function LinkPreview({ onOpen }) {
   return (
-    <a className="link-preview" href={TARGET_SITE_URL}>
+    <button type="button" className="link-preview" onClick={onOpen}>
       <span className="link-domain"><Link2 size={13} /> JACHUI-SUNBAE.KR</span>
       <strong>이 질문을 이어서<br />확인해보기</strong>
-      <small>주거지원과 매물 조건을 직접 물어볼 수 있어요.</small>
+      <small>네 상황에 맞는 항목만 1분 안에 확인해요.</small>
       <i><ArrowRight size={17} /></i>
-    </a>
+    </button>
+  )
+}
+
+const quickQuestions = [
+  { key: 'support', label: '자취와 지원금, 지금 어디쯤이야?', options: ['처음 알아보는 중', '지원금 받은 적 있어', '잘 모르겠어'] },
+  { key: 'home', label: '어떤 집을 알아보고 있어?', options: ['서울·수도권 원룸', '광역시·오피스텔', '빌라·기타 주택'] },
+  { key: 'budget', label: '예산은 어느 정도야?', options: ['보증금 1천 / 월세 60 이하', '보증금 3천 / 월세 80 이하', '아직 정하는 중'] },
+  { key: 'movein', label: '전입신고는 가능해?', options: ['가능하다고 들었어', '아직 모르겠어', '불가능해'] },
+]
+
+function QuickCheck({ onClose }) {
+  const [step, setStep] = useState(0)
+  const [answers, setAnswers] = useState({})
+  const current = quickQuestions[step]
+  const complete = step >= quickQuestions.length
+
+  const choose = (answer) => {
+    if (!current) return
+    setAnswers((value) => ({ ...value, [current.key]: answer }))
+    setStep((value) => value + 1)
+  }
+
+  return (
+    <section className="quick-check" aria-label="1분 맞춤 점검">
+      <div className="quick-topbar">
+        <button type="button" onClick={onClose}><ChevronLeft size={18} /> 대화로 돌아가기</button>
+        <span>JACHUI-SUNBAE · QUICK CHECK</span>
+        <button type="button" className="quick-close" aria-label="닫기" onClick={onClose}><X size={17} /></button>
+      </div>
+      <div className="quick-main">
+        <p className="quick-kicker">계약 전 1분 점검</p>
+        {!complete ? (
+          <>
+            <div className="quick-progress"><span style={{ width: `${((step + 1) / quickQuestions.length) * 100}%` }} /></div>
+            <p className="quick-count">0{step + 1} / 04</p>
+            <h2>{current.label}</h2>
+            <p className="quick-help">가장 가까운 답 하나만 골라줘. 긴 설명이나 입력은 필요 없어.</p>
+            <div className="quick-options">
+              {current.options.map((option) => <button type="button" key={option} onClick={() => choose(option)}><span>{option}</span><ArrowRight size={16} /></button>)}
+            </div>
+          </>
+        ) : (
+          <div className="quick-result">
+            <p className="quick-count">완료 · 04 / 04</p>
+            <h2>이제 확인할 것만<br />짧게 정리했어.</h2>
+            <p className="quick-scope"><strong>첫 검증 범위</strong>는 계약 전 주거지원과 매물 조건 확인이야.</p>
+            <p className="quick-help">네 답변을 기준으로 계약 전에 놓치기 쉬운 네 가지를 골랐어.</p>
+            <div className="answer-strip">{Object.values(answers).map((answer) => <span key={answer}>{answer}</span>)}</div>
+            <div className="result-grid">
+              <article><span>01</span><strong>확인해볼 주거지원</strong><p>청년·지역 지원금과 중개보수 지원을 먼저 확인해봐.</p></article>
+              <article><span>02</span><strong>계약 전 매물 조건</strong><p>전입신고 가능 여부와 계약서 특약을 체크해.</p></article>
+              <article><span>03</span><strong>중개인·집주인에게 물어볼 질문</strong><p>“확정일자와 하자 수리는 어떻게 진행되나요?”</p></article>
+              <article><span>04</span><strong>보관할 서류와 기록</strong><p>계약서·등기부·입주 전 사진과 대화 캡처를 남겨.</p></article>
+            </div>
+            <div className="quick-next"><span>다음 검증</span><strong>집 보기 현장의<br />확인·사진·메모 기록</strong><p>이 흐름이 실제로 도움이 됐는지 알려주면, 다음 프로토타입에 반영할게.</p></div>
+            <button type="button" className="quick-back" onClick={() => { setStep(0); setAnswers({}) }}>다시 답하기</button>
+          </div>
+        )}
+      </div>
+    </section>
   )
 }
 
@@ -101,6 +160,7 @@ function App() {
   const [message, setMessage] = useState('')
   const [sentMessages, setSentMessages] = useState([])
   const [keyboardOpen, setKeyboardOpen] = useState(false)
+  const [showQuickCheck, setShowQuickCheck] = useState(false)
 
   useEffect(() => {
     const timers = [
@@ -141,7 +201,7 @@ function App() {
           <ChevronLeft size={24} strokeWidth={1.7} />
           <div className="profile-avatar">선</div>
           <div className="profile-copy"><strong>자취선배 <i /></strong><span>온라인</span></div>
-          <a className="header-site" href={TARGET_SITE_URL}><Link2 size={15} /> 사이트 바로가기</a>
+          <button type="button" className="header-site" onClick={() => setShowQuickCheck(true)}><Check size={15} /> 1분 맞춤 점검</button>
         </header>
 
         <div className="dm-body" ref={chatBodyRef} aria-live="polite">
@@ -179,7 +239,7 @@ function App() {
               <div className="scene scene-result">
                 <Bubble mine>{known.id === 'know' ? '알았어. 다시 한 번 확인할게.' : '몰랐어. 지금 알게 돼서 다행이다.'}</Bubble>
                 <Bubble>좋아. 다음엔 네 상황에 맞는 체크리스트로 이어갈게.</Bubble>
-                <LinkPreview />
+                <LinkPreview onOpen={() => setShowQuickCheck(true)} />
               </div>
             )}
 
@@ -199,6 +259,7 @@ function App() {
         </div>
 
         <aside className="desktop-rail rail-right">JACHUI-SUNBAE · 2026</aside>
+        {showQuickCheck && <QuickCheck onClose={() => setShowQuickCheck(false)} />}
       </div>
     </main>
   )
