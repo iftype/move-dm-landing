@@ -33,10 +33,6 @@ function Bubble({ children, mine = false, wide = false, muted = false }) {
   )
 }
 
-function Previous({ mine, children }) {
-  return <div className={`previous-line ${mine ? 'is-mine' : ''}`}>{children}</div>
-}
-
 function IntroScene({ stage }) {
   return (
     <div className="scene scene-intro">
@@ -370,7 +366,6 @@ function App() {
           <div className="home-indicator" />
         </div>
 
-        <aside className="desktop-rail rail-left">SCROLL TO REPLY</aside>
         <aside className="desktop-rail rail-right">JACHUI-SUNBAE · 2026</aside>
         {showIntro && <SiteIntro onClose={() => setShowIntro(false)} />}
       </div>
