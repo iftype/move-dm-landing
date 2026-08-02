@@ -99,16 +99,44 @@ function SiteIntro({ onClose }) {
         <span>JACHUI-SUNBAE.KR</span>
         <button type="button" aria-label="닫기" onClick={onClose}><X size={20} /></button>
       </div>
-      <div className="intro-content">
-        <span className="intro-kicker">JACHUI-SUNBAE · 2026</span>
-        <h2>계약보다 먼저,<br />확인.</h2>
-        <p>보증금부터 지원금, 전입신고와 누수까지.<br />자취 시작 전에 놓치기 쉬운 순간을 대화로 확인합니다.</p>
-        <div className="intro-steps">
-          <span><b>01</b> 위험 발견</span>
-          <span><b>02</b> 1분 체크</span>
-          <span><b>03</b> 맞춤 안내</span>
-        </div>
-        <button type="button" className="intro-cta" onClick={onClose}>DM으로 돌아가기 <ArrowRight size={18} /></button>
+      <div className="intro-content validation-page">
+        <span className="intro-kicker">FIRST VALIDATION · 2026</span>
+        <h2>지금 무엇을<br />검증하고 있나요?</h2>
+        <p className="validation-lede">첫 검증 범위는 <strong>계약 전 주거지원과 매물 조건 확인</strong>입니다.</p>
+
+        <section className="validation-section validation-scope">
+          <div className="validation-label"><span>01</span><em>WHAT WE CHECK</em></div>
+          <div>
+            <h3>사용자와 매물의 조건을<br />같이 확인합니다.</h3>
+            <p>사용자의 나이·지역·주거지원 경험과 매물의 지역·보증금·월세·전입신고 가능 여부·주택 유형을 함께 확인해 안내합니다.</p>
+          </div>
+        </section>
+
+        <section className="validation-section">
+          <div className="validation-label"><span>02</span><em>PROTOTYPE OUTPUT</em></div>
+          <div className="validation-items">
+            <div><b>01</b><strong>확인해볼 주거지원</strong></div>
+            <div><b>02</b><strong>계약 전에 추가로 확인할 매물 조건</strong></div>
+            <div><b>03</b><strong>중개인이나 집주인에게 물어볼 질문</strong></div>
+            <div><b>04</b><strong>계약과 입주 때 보관할 서류와 기록</strong></div>
+          </div>
+        </section>
+
+        <section className="validation-section validation-proof">
+          <div className="validation-label"><span>03</span><em>WHAT WE LEARN</em></div>
+          <div>
+            <h3>사용 전후의 차이를<br />외부 사용자에게 묻습니다.</h3>
+            <p>프로토타입 사용 전후로 새롭게 발견한 지원, 확인 조건, 질문과 기록이 실제로 달라지는지 확인하고 있습니다.</p>
+          </div>
+        </section>
+
+        <section className="validation-next">
+          <span>NEXT VALIDATION POINT</span>
+          <strong>집 보기 현장의<br />확인·사진·메모 기록</strong>
+          <p>이 결과를 바탕으로 다음 검증 지점을 현장 경험으로 확장하려 합니다.</p>
+        </section>
+
+        <button type="button" className="intro-cta" onClick={onClose}>대화로 돌아가기 <ArrowRight size={18} /></button>
       </div>
     </div>
   )
