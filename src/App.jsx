@@ -112,14 +112,14 @@ function QuickCheck({ onClose }) {
             <h2>이제 확인할 것만<br />짧게 정리했어.</h2>
             <p className="quick-scope"><strong>첫 검증 범위</strong>는 계약 전 주거지원과 매물 조건 확인이야.</p>
             <p className="quick-help">네 답변을 기준으로 계약 전에 놓치기 쉬운 네 가지를 골랐어.</p>
-            <div className="answer-strip">{Object.values(answers).map((answer) => <span key={answer}>{answer}</span>)}</div>
+            <p className="answer-line"><span>선택한 내용</span> {Object.values(answers).join(' · ')}</p>
             <div className="result-grid">
-              <article><span>01</span><strong>확인해볼 주거지원</strong><p>청년·지역 지원금과 중개보수 지원을 먼저 확인해봐.</p></article>
-              <article><span>02</span><strong>계약 전 매물 조건</strong><p>전입신고 가능 여부와 계약서 특약을 체크해.</p></article>
-              <article><span>03</span><strong>중개인·집주인에게 물어볼 질문</strong><p>“확정일자와 하자 수리는 어떻게 진행되나요?”</p></article>
-              <article><span>04</span><strong>보관할 서류와 기록</strong><p>계약서·등기부·입주 전 사진과 대화 캡처를 남겨.</p></article>
+              <article><span>01</span><div><strong>확인해볼 주거지원</strong><p>청년·지역 지원금과 중개보수 지원을 먼저 확인해봐.</p></div><ArrowRight size={17} /></article>
+              <article><span>02</span><div><strong>계약 전 매물 조건</strong><p>전입신고 가능 여부와 계약서 특약을 체크해.</p></div><ArrowRight size={17} /></article>
+              <article><span>03</span><div><strong>중개인·집주인에게 물어볼 질문</strong><p>“확정일자와 하자 수리는 어떻게 진행되나요?”</p></div><ArrowRight size={17} /></article>
+              <article><span>04</span><div><strong>보관할 서류와 기록</strong><p>계약서·등기부·입주 전 사진과 대화 캡처를 남겨.</p></div><ArrowRight size={17} /></article>
             </div>
-            <div className="quick-next"><span>다음 검증</span><strong>집 보기 현장의<br />확인·사진·메모 기록</strong><p>이 흐름이 실제로 도움이 됐는지 알려주면, 다음 프로토타입에 반영할게.</p></div>
+            <div className="quick-next"><div><span>다음 검증</span><strong>집 보기 현장의<br />확인·사진·메모 기록</strong></div><p>이 흐름이 실제로 도움이 됐는지 알려주면, 다음 프로토타입에 반영할게.</p></div>
             <button type="button" className="quick-back" onClick={() => { setStep(0); setAnswers({}) }}>다시 답하기</button>
           </div>
         )}

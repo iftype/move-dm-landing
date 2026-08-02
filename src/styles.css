@@ -133,17 +133,20 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .quick-options button:hover { color: #fff; background: var(--blue); border-color: var(--blue); transform: translateX(3px); }
 .quick-options button span { font-size: 13px; font-weight: 700; letter-spacing: -.03em; }
 .quick-result { max-width: 860px; }
-.answer-strip { margin: 24px 0 28px; display: flex; flex-wrap: wrap; gap: 6px; }
-.answer-strip span { padding: 7px 10px; color: #5063bf; background: #eef1ff; border-radius: 999px; font-size: 9px; font-weight: 700; }
-.result-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.result-grid article { min-height: 142px; padding: 18px; display: flex; flex-direction: column; gap: 8px; border: 1px solid rgba(17,18,22,.12); border-radius: 16px; background: #fafafa; }
-.result-grid article > span, .quick-next > span { color: var(--blue); font: 9px 'DM Mono', monospace; letter-spacing: .08em; }
-.result-grid strong { font-size: 14px; letter-spacing: -.04em; }
-.result-grid p { margin: 0; color: #6b6e76; font-size: 11px; line-height: 1.55; letter-spacing: -.025em; }
-.quick-next { margin-top: 12px; padding: 20px; display: grid; grid-template-columns: 1fr 1.2fr 1.5fr; align-items: center; gap: 20px; color: #fff; background: #111216; border-radius: 16px; }
-.quick-next > span { color: #aebaff; }
-.quick-next strong { font-size: 17px; line-height: 1.2; letter-spacing: -.05em; }
-.quick-next p { margin: 0; color: #adb0b9; font-size: 10px; line-height: 1.55; }
+.answer-line { margin: 25px 0 45px; color: #8a8d94; font-size: 10px; line-height: 1.55; letter-spacing: -.02em; }
+.answer-line span { margin-right: 8px; color: #60636b; font-weight: 700; }
+.result-grid { display: flex; flex-direction: column; border-top: 1px solid rgba(17,18,22,.17); }
+.result-grid article { min-height: 112px; padding: 23px 5px; display: grid; grid-template-columns: 42px 1fr 20px; align-items: center; gap: 16px; border-bottom: 1px solid rgba(17,18,22,.12); }
+.result-grid article > span { align-self: start; padding-top: 3px; color: var(--blue); font: 9px 'DM Mono', monospace; letter-spacing: .08em; }
+.result-grid article > svg { color: #a7aab0; transition: color .2s, transform .2s; }
+.result-grid article:hover > svg { color: var(--blue); transform: translateX(3px); }
+.result-grid strong { display: block; font-size: 20px; letter-spacing: -.055em; }
+.result-grid p { margin: 7px 0 0; color: #6b6e76; font-size: 12px; line-height: 1.55; letter-spacing: -.025em; }
+.quick-next { margin-top: 76px; padding: 30px 0 10px; display: grid; grid-template-columns: 1fr 1.2fr; align-items: end; gap: 24px; border-top: 1px solid rgba(17,18,22,.17); }
+.quick-next > div { display: flex; flex-direction: column; gap: 15px; }
+.quick-next > div > span { color: var(--blue); font: 9px 'DM Mono', monospace; letter-spacing: .08em; }
+.quick-next strong { font-size: 27px; line-height: 1.14; letter-spacing: -.06em; }
+.quick-next p { max-width: 280px; margin: 0; color: #6b6e76; font-size: 11px; line-height: 1.65; }
 .quick-back { margin-top: 18px; padding: 10px 0; color: #666a73; background: transparent; border: 0; font-size: 10px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 .email-reply, .complete-reply { width: 100%; margin-top: auto; margin-bottom: 12px; padding: 18px; border: 1px solid var(--line); border-radius: 20px; background: rgba(23,24,28,.9); }
 .email-reply label { display: block; margin-bottom: 9px; color: #a9acb3; font-size: 9px; }
@@ -271,9 +274,12 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .quick-help { font-size: 12px; }
   .quick-options button { min-height: 54px; }
   .quick-options button span { font-size: 12px; }
-  .result-grid { grid-template-columns: 1fr; }
-  .result-grid article { min-height: auto; }
-  .quick-next { grid-template-columns: 1fr; gap: 9px; padding: 17px; }
+  .answer-line { margin: 21px 0 32px; font-size: 9px; }
+  .result-grid article { min-height: 104px; padding: 20px 0; grid-template-columns: 30px 1fr 16px; gap: 9px; }
+  .result-grid strong { font-size: 17px; }
+  .result-grid p { margin-top: 6px; font-size: 11px; }
+  .quick-next { grid-template-columns: 1fr; gap: 20px; margin-top: 54px; padding-top: 24px; }
+  .quick-next strong { font-size: 23px; }
   .intro-content h2 { font-size: 64px; }
   .intro-steps { grid-template-columns: 1fr; }
   .intro-steps span + span { border-left: 0; border-top: 1px solid rgba(17,18,22,.12); }
