@@ -69,15 +69,34 @@ function LinkPreview({ onOpen }) {
 }
 
 const quickQuestions = [
-  { key: 'support', label: '자취와 지원금, 지금 어디쯤이야?', options: ['처음 알아보는 중', '지원금 받은 적 있어', '잘 모르겠어'] },
-  { key: 'home', label: '어떤 집을 알아보고 있어?', options: ['서울·수도권 원룸', '광역시·오피스텔', '빌라·기타 주택'] },
-  { key: 'budget', label: '예산은 어느 정도야?', options: ['보증금 1천 / 월세 60 이하', '보증금 3천 / 월세 80 이하', '아직 정하는 중'] },
-  { key: 'movein', label: '전입신고는 가능해?', options: ['가능하다고 들었어', '아직 모르겠어', '불가능해'] },
+  { key: 'support', label: '혹시 청년 지원금, 받아본 적 있어?', options: ['아직 한 번도 없어', '예전에 받아봤어', '뭐가 있는지 모르겠어'] },
+  { key: 'home', label: '지금 보는 집, 지역이 어디야?', options: ['서울·수도권', '광역시', '아직 못 정했어'] },
+  { key: 'budget', label: '보증금이랑 월세는 어느 정도야?', options: ['보증금 1천 / 월세 60 이하', '보증금 3천 / 월세 80 이하', '아직 정하는 중'] },
+  { key: 'movein', label: '전입신고 된다고 집주인이 말했어?', options: ['된다고 들었어', '아직 안 물어봤어', '안 된다고 했어'] },
 ]
+
+const quickResults = [
+  { number: '01', title: '전입신고부터 확인하자', body: '집주인 말만 듣지 말고, 계약서에 전입신고가 가능한지 한 줄로 남겨두자.' },
+  { number: '02', title: '받을 수 있는 지원금 찾아보기', body: '청년·지역 지원금과 중개보수 지원은 신청 기간이 짧을 수 있어.' },
+  { number: '03', title: '중개인·집주인에게 물어볼 말', body: '“확정일자와 하자 수리는 어떻게 진행되나요?”라고 물어봐.' },
+  { number: '04', title: '계약서와 집 상태 남겨두기', body: '계약서·등기부·입주 전 사진과 대화 캡처를 한 폴더에 모아두자.' },
+]
+
+function EvidencePreview() {
+  return (
+    <figure className="evidence-preview">
+      <div className="evidence-photo" role="img" aria-label="입주 전 방 내부를 촬영한 예시 사진"><span>집 보러 간 날</span><b>창가 누수 흔적</b></div>
+      <div className="evidence-paper evidence-contract"><small>계약서 예시</small><strong>전입신고 가능</strong><i>특약 03</i></div>
+      <div className="evidence-paper evidence-registry"><small>등기부 예시</small><strong>근저당 확인</strong><i>갑구 · 을구</i></div>
+      <figcaption>개인정보를 가린 예시예요. 계약 전에 이 세 가지를 같이 남겨둬.</figcaption>
+    </figure>
+  )
+}
 
 function QuickCheck({ onClose }) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
+  const [showMore, setShowMore] = useState(false)
   const current = quickQuestions[step]
   const complete = step >= quickQuestions.length
 
@@ -95,11 +114,11 @@ function QuickCheck({ onClose }) {
         <button type="button" className="quick-close" aria-label="닫기" onClick={onClose}><X size={17} /></button>
       </div>
       <div className="quick-main">
-        <p className="quick-kicker">계약 전 1분 점검</p>
+        <p className="quick-kicker">계약 전에 같이 봐</p>
         {!complete ? (
           <>
             <div className="quick-progress"><span style={{ width: `${((step + 1) / quickQuestions.length) * 100}%` }} /></div>
-            <p className="quick-count">0{step + 1} / 04</p>
+            <p className="quick-count">{step === 0 ? '먼저 하나만' : step === quickQuestions.length - 1 ? '마지막으로 하나만' : '하나만 더'}</p>
             <h2>{current.label}</h2>
             <p className="quick-help">가장 가까운 답 하나만 골라줘. 긴 설명이나 입력은 필요 없어.</p>
             <div className="quick-options">
@@ -108,19 +127,18 @@ function QuickCheck({ onClose }) {
           </>
         ) : (
           <div className="quick-result">
-            <p className="quick-count">완료 · 04 / 04</p>
-            <h2>이제 확인할 것만<br />짧게 정리했어.</h2>
-            <p className="quick-scope"><strong>첫 검증 범위</strong>는 계약 전 주거지원과 매물 조건 확인이야.</p>
-            <p className="quick-help">네 답변을 기준으로 계약 전에 놓치기 쉬운 네 가지를 골랐어.</p>
+            <p className="quick-count">좋아, 여기까지.</p>
+            <h2>좋아. 이거부터<br />확인하자.</h2>
+            <p className="quick-scope">계약 전에 주거지원이랑 집 조건부터 같이 보자.</p>
+            <p className="quick-help">지금 네 상황에서 제일 중요한 것부터 골랐어.</p>
             <p className="answer-line"><span>선택한 내용</span> {Object.values(answers).join(' · ')}</p>
             <div className="result-grid">
-              <article><span>01</span><div><strong>확인해볼 주거지원</strong><p>청년·지역 지원금과 중개보수 지원을 먼저 확인해봐.</p></div><ArrowRight size={17} /></article>
-              <article><span>02</span><div><strong>계약 전 매물 조건</strong><p>전입신고 가능 여부와 계약서 특약을 체크해.</p></div><ArrowRight size={17} /></article>
-              <article><span>03</span><div><strong>중개인·집주인에게 물어볼 질문</strong><p>“확정일자와 하자 수리는 어떻게 진행되나요?”</p></div><ArrowRight size={17} /></article>
-              <article><span>04</span><div><strong>보관할 서류와 기록</strong><p>계약서·등기부·입주 전 사진과 대화 캡처를 남겨.</p></div><ArrowRight size={17} /></article>
+              {quickResults.slice(0, 1).map((item) => <article className="result-feature" key={item.number}><span>{item.number}</span><div><strong>{item.title}</strong><p>{item.body}</p></div><ArrowRight size={17} /></article>)}
+              {showMore && quickResults.slice(1).map((item) => <article key={item.number}><span>{item.number}</span><div><strong>{item.title}</strong><p>{item.body}</p></div><ArrowRight size={17} /></article>)}
             </div>
-            <div className="quick-next"><div><span>다음 검증</span><strong>집 보기 현장의<br />확인·사진·메모 기록</strong></div><p>이 흐름이 실제로 도움이 됐는지 알려주면, 다음 프로토타입에 반영할게.</p></div>
-            <button type="button" className="quick-back" onClick={() => { setStep(0); setAnswers({}) }}>다시 답하기</button>
+            <EvidencePreview />
+            <button type="button" className="more-results" onClick={() => setShowMore((value) => !value)}>{showMore ? '덜 보기' : '나머지도 보기'} <ChevronLeft size={14} className={showMore ? 'is-open' : ''} /></button>
+            <button type="button" className="quick-back" onClick={() => { setStep(0); setAnswers({}); setShowMore(false) }}>다시 답하기</button>
           </div>
         )}
       </div>
