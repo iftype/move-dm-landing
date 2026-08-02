@@ -61,8 +61,8 @@ function LinkPreview({ onOpen }) {
   return (
     <button type="button" className="link-preview" onClick={onOpen}>
       <span className="link-domain"><Link2 size={13} /> JACHUI-SUNBAE.KR</span>
-      <strong>이 질문을 이어서<br />확인해보기</strong>
-      <small>네 상황에 맞는 항목만 1분 안에 확인해요.</small>
+      <strong>계약 전에 뭘 물어볼지<br />같이 정리해보기</strong>
+      <small>잘 모르겠는 건 모른다고 답해도 괜찮아요.</small>
       <i><ArrowRight size={17} /></i>
     </button>
   )
@@ -76,10 +76,34 @@ const quickQuestions = [
 ]
 
 const quickResults = [
-  { number: '01', title: '전입신고부터 확인하자', body: '집주인 말만 듣지 말고, 계약서에 전입신고가 가능한지 한 줄로 남겨두자.' },
-  { number: '02', title: '받을 수 있는 지원금 찾아보기', body: '청년·지역 지원금과 중개보수 지원은 신청 기간이 짧을 수 있어.' },
-  { number: '03', title: '중개인·집주인에게 물어볼 말', body: '“확정일자와 하자 수리는 어떻게 진행되나요?”라고 물어봐.' },
-  { number: '04', title: '계약서와 집 상태 남겨두기', body: '계약서·등기부·입주 전 사진과 대화 캡처를 한 폴더에 모아두자.' },
+  {
+    key: 'movein',
+    title: '전입신고, 말로만 듣고 넘기지 마.',
+    body: '가능하다는 답을 받으면 계약서 특약에도 같은 내용이 들어가는지 확인해.',
+    ask: '“전입신고와 확정일자가 가능한 집인지 계약서 특약에 적어주실 수 있을까요?”',
+    keep: '답변은 문자나 메신저로 받아서 계약서와 같이 보관해둬.',
+  },
+  {
+    key: 'support',
+    title: '지원금은 집 계약 전에 한 번 찾아봐.',
+    body: '지역과 신청 시기에 따라 이사비나 중개보수 지원 조건이 달라질 수 있어.',
+    ask: '“이 집으로 계약하면 신청할 수 있는 청년 주거지원이 있을까요?”',
+    keep: '거주 지역 청년정책 페이지와 접수 마감일을 캡처해둬.',
+  },
+  {
+    key: 'condition',
+    title: '수리 얘기는 집 볼 때 바로 꺼내.',
+    body: '누수나 곰팡이처럼 눈에 보이는 하자는 입주 전에 누가 수리할지 정해두는 게 좋아.',
+    ask: '“지금 보이는 하자는 입주 전에 어디까지 수리해주시나요?”',
+    keep: '하자 사진, 촬영 날짜, 수리하기로 한 대화를 같이 남겨둬.',
+  },
+  {
+    key: 'record',
+    title: '서류와 사진은 한 폴더에 모아둬.',
+    body: '계약서, 등기부, 집 상태 사진을 흩어두면 막상 필요할 때 찾기 어려워.',
+    ask: '“계약 전에 최신 등기부와 관리비 내역도 볼 수 있을까요?”',
+    keep: '계약 전·입주 당일 폴더를 나눠서 원본 파일을 보관해둬.',
+  },
 ]
 
 function EvidencePreview() {
@@ -99,6 +123,15 @@ function QuickCheck({ onClose }) {
   const [showMore, setShowMore] = useState(false)
   const current = quickQuestions[step]
   const complete = step >= quickQuestions.length
+  const priorityKey = answers.movein !== '된다고 들었어'
+    ? 'movein'
+    : answers.support !== '예전에 받아봤어'
+      ? 'support'
+      : answers.budget === '아직 정하는 중'
+        ? 'condition'
+        : 'record'
+  const priority = quickResults.find((item) => item.key === priorityKey)
+  const otherResults = quickResults.filter((item) => item.key !== priorityKey)
 
   const choose = (answer) => {
     if (!current) return
@@ -107,37 +140,35 @@ function QuickCheck({ onClose }) {
   }
 
   return (
-    <section className="quick-check" aria-label="1분 맞춤 점검">
+    <section className="quick-check" aria-label="계약 전 확인">
       <div className="quick-topbar">
         <button type="button" onClick={onClose}><ChevronLeft size={18} /> 대화로 돌아가기</button>
-        <span>JACHUI-SUNBAE · QUICK CHECK</span>
+        <span>자취선배</span>
         <button type="button" className="quick-close" aria-label="닫기" onClick={onClose}><X size={17} /></button>
       </div>
       <div className="quick-main">
-        <p className="quick-kicker">계약 전에 같이 봐</p>
         {!complete ? (
           <>
-            <div className="quick-progress"><span style={{ width: `${((step + 1) / quickQuestions.length) * 100}%` }} /></div>
-            <p className="quick-count">{step === 0 ? '먼저 하나만' : step === quickQuestions.length - 1 ? '마지막으로 하나만' : '하나만 더'}</p>
             <h2>{current.label}</h2>
-            <p className="quick-help">가장 가까운 답 하나만 골라줘. 긴 설명이나 입력은 필요 없어.</p>
+            <p className="quick-help">잘 모르겠으면 그냥 모른다고 골라도 돼.</p>
             <div className="quick-options">
               {current.options.map((option) => <button type="button" key={option} onClick={() => choose(option)}><span>{option}</span><ArrowRight size={16} /></button>)}
             </div>
           </>
         ) : (
           <div className="quick-result">
-            <p className="quick-count">좋아, 여기까지.</p>
-            <h2>좋아. 이거부터<br />확인하자.</h2>
-            <p className="quick-scope">계약 전에 주거지원이랑 집 조건부터 같이 보자.</p>
-            <p className="quick-help">지금 네 상황에서 제일 중요한 것부터 골랐어.</p>
-            <p className="answer-line"><span>선택한 내용</span> {Object.values(answers).join(' · ')}</p>
+            <h2>{priority.title}</h2>
+            <p className="quick-scope">{priority.body}</p>
+            <div className="say-this">
+              <span>그대로 물어봐</span>
+              <blockquote>{priority.ask}</blockquote>
+              <p>{priority.keep}</p>
+            </div>
             <div className="result-grid">
-              {quickResults.slice(0, 1).map((item) => <article className="result-feature" key={item.number}><span>{item.number}</span><div><strong>{item.title}</strong><p>{item.body}</p></div><ArrowRight size={17} /></article>)}
-              {showMore && quickResults.slice(1).map((item) => <article key={item.number}><span>{item.number}</span><div><strong>{item.title}</strong><p>{item.body}</p></div><ArrowRight size={17} /></article>)}
+              {showMore && otherResults.map((item) => <article key={item.key}><div><strong>{item.title}</strong><p>{item.body}</p></div></article>)}
             </div>
             <EvidencePreview />
-            <button type="button" className="more-results" onClick={() => setShowMore((value) => !value)}>{showMore ? '덜 보기' : '나머지도 보기'} <ChevronLeft size={14} className={showMore ? 'is-open' : ''} /></button>
+            <button type="button" className="more-results" onClick={() => setShowMore((value) => !value)}>{showMore ? '여기까지만 볼게' : '이것도 같이 확인해봐'} <ChevronLeft size={14} className={showMore ? 'is-open' : ''} /></button>
             <button type="button" className="quick-back" onClick={() => { setStep(0); setAnswers({}); setShowMore(false) }}>다시 답하기</button>
           </div>
         )}
@@ -219,7 +250,7 @@ function App() {
           <ChevronLeft size={24} strokeWidth={1.7} />
           <div className="profile-avatar">선</div>
           <div className="profile-copy"><strong>자취선배 <i /></strong><span>온라인</span></div>
-          <button type="button" className="header-site" onClick={() => setShowQuickCheck(true)}><Check size={15} /> 1분 맞춤 점검</button>
+          <button type="button" className="header-site" onClick={() => setShowQuickCheck(true)}><Check size={15} /> 계약 전에 물어보기</button>
         </header>
 
         <div className="dm-body" ref={chatBodyRef} aria-live="polite">
