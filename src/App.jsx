@@ -9,8 +9,9 @@ import {
   Mic,
   Send,
   Smile,
-  X,
 } from 'lucide-react'
+
+const TARGET_SITE_URL = 'https://zaru-landing-1ymxjuovj-mocas-projects-e7b58534.vercel.app/'
 
 const firstChoices = [
   { id: 'soon', label: '응, 다음 달에 이사해', info: <>그럼 계약 전에 <strong>보증금 반환</strong>부터 확인해보자.<br />등기부와 선순위 보증금은 꼭 봐야 해.</> },
@@ -57,14 +58,14 @@ function ChoiceGroup({ eyebrow, title, choices, selectedId, onSelect }) {
   )
 }
 
-function LinkPreview({ onOpen }) {
+function LinkPreview() {
   return (
-    <button type="button" className="link-preview" onClick={onOpen}>
+    <a className="link-preview" href={TARGET_SITE_URL}>
       <span className="link-domain"><Link2 size={13} /> JACHUI-SUNBAE.KR</span>
-      <strong>자취선배가 정리한<br />이사 체크리스트</strong>
-      <small>계약 전에 알아야 할 것들을 한눈에 확인해보세요.</small>
+      <strong>이 질문을 이어서<br />확인해보기</strong>
+      <small>주거지원과 매물 조건을 직접 물어볼 수 있어요.</small>
       <i><ArrowRight size={17} /></i>
-    </button>
+    </a>
   )
 }
 
@@ -91,57 +92,6 @@ function VirtualKeyboard({ onKey, onClose }) {
   )
 }
 
-function SiteIntro({ onClose }) {
-  return (
-    <div className="site-intro">
-      <div className="intro-topbar">
-        <button type="button" onClick={onClose}><ChevronLeft size={22} /> 대화로 돌아가기</button>
-        <span>JACHUI-SUNBAE.KR</span>
-        <button type="button" aria-label="닫기" onClick={onClose}><X size={20} /></button>
-      </div>
-      <div className="intro-content validation-page">
-        <span className="intro-kicker">FIRST VALIDATION · 2026</span>
-        <h2>지금 무엇을<br />검증하고 있나요?</h2>
-        <p className="validation-lede">첫 검증 범위는 <strong>계약 전 주거지원과 매물 조건 확인</strong>입니다.</p>
-
-        <section className="validation-section validation-scope">
-          <div className="validation-label"><span>01</span><em>WHAT WE CHECK</em></div>
-          <div>
-            <h3>사용자와 매물의 조건을<br />같이 확인합니다.</h3>
-            <p>사용자의 나이·지역·주거지원 경험과 매물의 지역·보증금·월세·전입신고 가능 여부·주택 유형을 함께 확인해 안내합니다.</p>
-          </div>
-        </section>
-
-        <section className="validation-section">
-          <div className="validation-label"><span>02</span><em>PROTOTYPE OUTPUT</em></div>
-          <div className="validation-items">
-            <div><b>01</b><strong>확인해볼 주거지원</strong></div>
-            <div><b>02</b><strong>계약 전에 추가로 확인할 매물 조건</strong></div>
-            <div><b>03</b><strong>중개인이나 집주인에게 물어볼 질문</strong></div>
-            <div><b>04</b><strong>계약과 입주 때 보관할 서류와 기록</strong></div>
-          </div>
-        </section>
-
-        <section className="validation-section validation-proof">
-          <div className="validation-label"><span>03</span><em>WHAT WE LEARN</em></div>
-          <div>
-            <h3>사용 전후의 차이를<br />외부 사용자에게 묻습니다.</h3>
-            <p>프로토타입 사용 전후로 새롭게 발견한 지원, 확인 조건, 질문과 기록이 실제로 달라지는지 확인하고 있습니다.</p>
-          </div>
-        </section>
-
-        <section className="validation-next">
-          <span>NEXT VALIDATION POINT</span>
-          <strong>집 보기 현장의<br />확인·사진·메모 기록</strong>
-          <p>이 결과를 바탕으로 다음 검증 지점을 현장 경험으로 확장하려 합니다.</p>
-        </section>
-
-        <button type="button" className="intro-cta" onClick={onClose}>대화로 돌아가기 <ArrowRight size={18} /></button>
-      </div>
-    </div>
-  )
-}
-
 function App() {
   const chatBodyRef = useRef(null)
   const [introStep, setIntroStep] = useState(0)
@@ -151,7 +101,6 @@ function App() {
   const [message, setMessage] = useState('')
   const [sentMessages, setSentMessages] = useState([])
   const [keyboardOpen, setKeyboardOpen] = useState(false)
-  const [showIntro, setShowIntro] = useState(false)
 
   useEffect(() => {
     const timers = [
@@ -192,7 +141,7 @@ function App() {
           <ChevronLeft size={24} strokeWidth={1.7} />
           <div className="profile-avatar">선</div>
           <div className="profile-copy"><strong>자취선배 <i /></strong><span>온라인</span></div>
-          <button type="button" className="header-site" onClick={() => setShowIntro(true)}><Link2 size={15} /> 사이트 바로가기</button>
+          <a className="header-site" href={TARGET_SITE_URL}><Link2 size={15} /> 사이트 바로가기</a>
         </header>
 
         <div className="dm-body" ref={chatBodyRef} aria-live="polite">
@@ -230,7 +179,7 @@ function App() {
               <div className="scene scene-result">
                 <Bubble mine>{known.id === 'know' ? '알았어. 다시 한 번 확인할게.' : '몰랐어. 지금 알게 돼서 다행이다.'}</Bubble>
                 <Bubble>좋아. 다음엔 네 상황에 맞는 체크리스트로 이어갈게.</Bubble>
-                <LinkPreview onOpen={() => setShowIntro(true)} />
+                <LinkPreview />
               </div>
             )}
 
@@ -250,7 +199,6 @@ function App() {
         </div>
 
         <aside className="desktop-rail rail-right">JACHUI-SUNBAE · 2026</aside>
-        {showIntro && <SiteIntro onClose={() => setShowIntro(false)} />}
       </div>
     </main>
   )

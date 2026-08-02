@@ -31,7 +31,7 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .profile-copy strong { display: flex; align-items: center; gap: 6px; color: #111216; font-size: 14px; letter-spacing: -.03em; }
 .profile-copy strong i { width: 5px; height: 5px; border-radius: 50%; background: #52dc83; box-shadow: 0 0 0 4px rgba(82,220,131,.1); }
 .profile-copy span { color: var(--muted); font-size: 9px; }
-.header-site { margin-left: auto; padding: 8px 0; display: flex; align-items: center; gap: 7px; color: #6b6d74; background: transparent; border: 0; font-size: 10px; font-weight: 700; }
+.header-site { margin-left: auto; padding: 8px 0; display: flex; align-items: center; gap: 7px; color: #6b6d74; background: transparent; border: 0; font-size: 10px; font-weight: 700; text-decoration: none; }
 .header-site:hover { color: var(--blue); }
 
 .dm-body { position: relative; z-index: 2; height: calc(100svh - 152px); display: block; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; transition: height .3s ease; }
@@ -105,7 +105,7 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .result-tags { max-width: 82%; display: flex; flex-wrap: wrap; gap: 5px; }
 .result-tags span { padding: 7px 10px; color: var(--blue-soft); background: rgba(69,104,255,.13); border: 1px solid rgba(113,139,255,.22); border-radius: 999px; font-size: 9px; }
 .read-mark { align-self: flex-end; color: #52555d; font-size: 8px; }
-.link-preview { width: min(470px, 88%); margin-top: 4px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; position: relative; color: #111216; background: #f3f4f7; border: 1px solid rgba(69,104,255,.22); border-radius: 18px; text-align: left; overflow: hidden; transition: transform .2s, border-color .2s; }
+.link-preview { width: min(470px, 88%); margin-top: 4px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; position: relative; color: #111216; background: #f3f4f7; border: 1px solid rgba(69,104,255,.22); border-radius: 18px; text-align: left; text-decoration: none; overflow: hidden; transition: transform .2s, border-color .2s; }
 .link-preview::after { content: ''; position: absolute; width: 130px; height: 130px; right: -35px; top: -55px; border: 1px solid rgba(130,149,255,.18); border-radius: 50%; box-shadow: 0 0 0 22px rgba(86,112,255,.05); }
 .link-preview:hover { transform: translateY(-2px); border-color: rgba(121,142,255,.5); }
 .link-domain { display: flex; align-items: center; gap: 6px; color: var(--blue-soft); font: 8px 'DM Mono', monospace; letter-spacing: .08em; }
