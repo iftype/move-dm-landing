@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   ArrowRight,
   Check,
@@ -24,8 +24,6 @@ const checks = [
   { id: 'leak', icon: Droplets, label: '누수와 하자', sub: '입주 전 사진 기록' },
   { id: 'contract', icon: FileCheck2, label: '계약서 특약', sub: '위험 문구·필수 특약' },
 ]
-
-const phaseNames = ['새 메시지', '보증금', '지원금', '전입 · 하자', '체크하기', '답장 완료']
 
 function Bubble({ children, mine = false, wide = false, muted = false }) {
   return (
@@ -64,10 +62,6 @@ function WaitingScene() {
 function DepositScene() {
   return (
     <div className="scene">
-      <div className="previous-stack">
-        <Previous>8월에 이사해?</Previous>
-        <Previous mine>응, 드디어 집 구했어 😮‍💨</Previous>
-      </div>
       <Bubble wide>집을 구했다고 끝난 게 아니야.</Bubble>
       <Bubble wide>
         <strong>보증금을 돌려받지 못할 가능성은<br />계약 전부터 시작돼.</strong>
@@ -81,10 +75,6 @@ function DepositScene() {
 function SupportScene() {
   return (
     <div className="scene">
-      <div className="previous-stack">
-        <Previous>보증금부터 확인해야 해.</Previous>
-        <Previous mine>그건 아직 확인 못 했어.</Previous>
-      </div>
       <Bubble wide>
         받을 수 있던 <strong>이사비 지원금</strong>도<br />신청일 하루 지나면 끝이고.
       </Bubble>
@@ -100,10 +90,6 @@ function SupportScene() {
 function MoveInScene() {
   return (
     <div className="scene">
-      <div className="previous-stack">
-        <Previous>지원금은 신청 기한도 봐야 해.</Previous>
-        <Previous mine>몰라서 놓치면 너무 아까운데…</Previous>
-      </div>
       <Bubble wide>
         맞아. 그리고 <strong>전입신고 순서</strong>랑<br />입주 전 <strong>누수 사진</strong>은 확인했어?
       </Bubble>
@@ -151,19 +137,6 @@ function ChecklistScene({ selected, onToggle, onReply }) {
           이대로 답장 보내기 <span>{selected.length}개 <Send size={16} /></span>
         </button>
       </div>
-    </div>
-  )
-}
-
-function ChecklistPrompt() {
-  return (
-    <div className="scene checklist-prompt">
-      <Previous>괜찮아. 지금 같이 보면 돼.</Previous>
-      <div className="typing-label">자취선배님이 메시지를 보냈습니다</div>
-      <Bubble wide>
-        체크리스트가 필요하면<br /><strong>“체크리스트 보여줘”</strong>라고 입력해봐.
-      </Bubble>
-      <Bubble>네 상황에 맞는 항목만 바로 열어줄게.</Bubble>
     </div>
   )
 }
@@ -262,6 +235,7 @@ function SiteIntro({ onClose }) {
 }
 
 function App() {
+  const chatBodyRef = useRef(null)
   const [journeyPhase, setJourneyPhase] = useState(0)
   const [selected, setSelected] = useState([])
   const [submitted, setSubmitted] = useState(false)
@@ -272,7 +246,6 @@ function App() {
   const [message, setMessage] = useState('')
   const [keyboardOpen, setKeyboardOpen] = useState(false)
   const [sentMessages, setSentMessages] = useState([])
-  const [checklistRequested, setChecklistRequested] = useState(false)
   const [showIntro, setShowIntro] = useState(false)
 
   useEffect(() => {
@@ -302,6 +275,13 @@ function App() {
     return () => clearTimeout(timer)
   }, [phase])
 
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      chatBodyRef.current?.scrollTo({ top: chatBodyRef.current.scrollHeight, behavior: 'smooth' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [phase, phaseReady, introStage, selected.length, submitted, sentMessages.length, done, keyboardOpen])
+
   const toggle = (id) => {
     setSelected((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id])
   }
@@ -329,9 +309,7 @@ function App() {
     event.preventDefault()
     const value = message.trim()
     if (!value) return
-    if (phase === 4 && !checklistRequested) {
-      setChecklistRequested(true)
-    } else if (phase < 4) {
+    if (phase < 4) {
       setSentMessages((current) => [...current.slice(-1), value])
     }
     setMessage('')
@@ -342,16 +320,9 @@ function App() {
     setKeyboardOpen(false)
   }
 
-  const useChecklistSuggestion = () => {
-    setMessage('체크리스트 보여줘')
-    setKeyboardOpen(true)
-  }
-
   return (
     <main className="dm-journey">
       <div className={`dm-screen ${keyboardOpen ? 'keyboard-open' : ''}`}>
-        <div className="top-progress"><span style={{ transform: `scaleX(${phase / 5})` }} /></div>
-
         <header className="dm-header">
           <ChevronLeft size={24} strokeWidth={1.7} />
           <div className="profile-avatar">선</div>
@@ -359,33 +330,25 @@ function App() {
             <strong>자취선배 <i /></strong>
             <span>온라인</span>
           </div>
-          <div className="phase-label"><span>0{phase + 1} / 06</span><strong>{phaseNames[phase]}</strong></div>
+          <button className="header-site" onClick={() => setShowIntro(true)}><Link2 size={15} /> 사이트 바로가기</button>
         </header>
 
-        <div className="dm-body" aria-live="polite">
-          <div key={phase} className="scene-wrap">
-            {!phaseReady && phase > 0 ? <WaitingScene /> : (
-              <>
-                {phase === 0 && <IntroScene stage={introStage} />}
-                {phase === 1 && <DepositScene />}
-                {phase === 2 && <SupportScene />}
-                {phase === 3 && <MoveInScene />}
-                {phase === 4 && (checklistRequested
-                  ? <ChecklistScene selected={selected} onToggle={toggle} onReply={reply} />
-                  : <ChecklistPrompt />)}
-                {phase === 5 && <ResultScene selected={selected} email={email} setEmail={setEmail} done={done} onSubmit={signup} onOpenIntro={() => setShowIntro(true)} />}
-              </>
+        <div className="dm-body" ref={chatBodyRef} aria-live="polite">
+          <div className="message-list">
+            <IntroScene stage={introStage} />
+            {phase > 0 && !phaseReady && <WaitingScene />}
+            {phase >= 1 && phaseReady && <DepositScene />}
+            {phase >= 2 && phaseReady && <SupportScene />}
+            {phase >= 3 && phaseReady && <MoveInScene />}
+            {phase >= 4 && phaseReady && <ChecklistScene selected={selected} onToggle={toggle} onReply={reply} />}
+            {phase >= 5 && phaseReady && <ResultScene selected={selected} email={email} setEmail={setEmail} done={done} onSubmit={signup} onOpenIntro={() => setShowIntro(true)} />}
+            {phase < 4 && sentMessages.length > 0 && (
+              <div className="sent-stack">{sentMessages.map((text, index) => <Bubble mine key={`${text}-${index}`}>{text}</Bubble>)}</div>
             )}
           </div>
-          {phase < 4 && sentMessages.length > 0 && (
-            <div className="sent-stack">{sentMessages.map((text, index) => <Bubble mine key={`${text}-${index}`}>{text}</Bubble>)}</div>
-          )}
         </div>
 
         <div className="chat-footer">
-          {phase === 4 && !checklistRequested && keyboardOpen && (
-            <button className="quick-reply" onClick={useChecklistSuggestion}>체크리스트 보여줘</button>
-          )}
           <form className="chat-composer" onSubmit={sendMessage}>
             <button type="button" className="camera-button" aria-label="카메라"><Camera size={20} /></button>
             <input
