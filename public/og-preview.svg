@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f7f9fa"/>
+  <rect x="72" y="64" width="1056" height="502" rx="28" fill="#ffffff"/>
+  <circle cx="150" cy="145" r="44" fill="#35c5f0"/>
+  <text x="150" y="158" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="34" font-weight="800">선</text>
+  <text x="222" y="143" fill="#2f3438" font-family="sans-serif" font-size="34" font-weight="800">자취선배</text>
+  <text x="222" y="181" fill="#828c94" font-family="sans-serif" font-size="20">계약 전에 물어볼 것</text>
+  <text x="112" y="305" fill="#2f3438" font-family="sans-serif" font-size="54" font-weight="800">전입신고, 지원금, 매물 조건.</text>
+  <text x="112" y="375" fill="#2f3438" font-family="sans-serif" font-size="54" font-weight="800">계약 전에 짧게 확인해요.</text>
+  <rect x="112" y="450" width="250" height="62" rx="12" fill="#35c5f0"/>
+  <text x="237" y="489" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="23" font-weight="800">자취선배에게 물어보기</text>
+</svg>

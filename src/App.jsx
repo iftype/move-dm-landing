@@ -60,10 +60,16 @@ function ChoiceGroup({ eyebrow, title, choices, selectedId, onSelect }) {
 function LinkPreview({ onOpen }) {
   return (
     <button type="button" className="link-preview" onClick={onOpen}>
-      <span className="link-domain"><Link2 size={13} /> JACHUI-SUNBAE.KR</span>
-      <strong>계약 전에 뭘 물어볼지<br />같이 정리해보기</strong>
-      <small>잘 모르겠는 건 모른다고 답해도 괜찮아요.</small>
-      <i><ArrowRight size={17} /></i>
+      <span className="link-url"><Link2 size={12} /> iftype.github.io/move-dm-landing/</span>
+      <span className="link-meta">
+        <i className="link-cover"><Check size={20} /></i>
+        <span className="link-copy">
+          <small>IFTYPE.GITHUB.IO</small>
+          <strong>자취선배 | 계약 전에 물어볼 것</strong>
+          <em>전입신고, 주거지원, 매물 조건을 짧게 확인해요.</em>
+        </span>
+        <ArrowRight size={17} />
+      </span>
     </button>
   )
 }
@@ -122,6 +128,8 @@ function QuickCheck({ onClose }) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const [showMore, setShowMore] = useState(false)
+  const [email, setEmail] = useState('')
+  const [emailSubmitted, setEmailSubmitted] = useState(false)
   const current = quickQuestions[step]
   const complete = step >= quickQuestions.length
   const priorityKey = answers.movein !== '된다고 들었어'
@@ -140,13 +148,27 @@ function QuickCheck({ onClose }) {
     setStep((value) => value + 1)
   }
 
+  const goPrevious = () => {
+    setShowMore(false)
+    setEmailSubmitted(false)
+    if (step === 0) onClose()
+    else setStep((value) => value - 1)
+  }
+
+  const submitEmail = (event) => {
+    event.preventDefault()
+    if (!email.trim()) return
+    setEmailSubmitted(true)
+  }
+
   return (
     <section className="quick-check" aria-label="계약 전 확인">
       <div className="quick-topbar">
-        <button type="button" onClick={onClose}><ChevronLeft size={18} /> 대화로 돌아가기</button>
+        <button type="button" onClick={goPrevious}><ChevronLeft size={18} /> 이전 단계</button>
         <span>자취선배</span>
         <button type="button" className="quick-close" aria-label="닫기" onClick={onClose}><X size={17} /></button>
       </div>
+      <div className="quick-stage" aria-hidden="true"><span style={{ width: `${(Math.min(step, quickQuestions.length) / quickQuestions.length) * 100}%` }} /></div>
       <div className="quick-main">
         {!complete ? (
           <>
@@ -170,34 +192,15 @@ function QuickCheck({ onClose }) {
             </div>
             <EvidencePreview />
             <button type="button" className="more-results" onClick={() => setShowMore((value) => !value)}>{showMore ? '여기까지만 볼게' : '이것도 같이 확인해봐'} <ChevronLeft size={14} className={showMore ? 'is-open' : ''} /></button>
-            <button type="button" className="quick-back" onClick={() => { setStep(0); setAnswers({}); setShowMore(false) }}>다시 답하기</button>
+            <form className="launch-email" onSubmit={submitEmail}>
+              <label htmlFor="launch-email">서비스가 나오면 알려드릴게요</label>
+              <div><input id="launch-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setEmailSubmitted(false) }} placeholder="이메일 주소" required /><button type="submit">메일로 받기</button></div>
+              <small>{emailSubmitted ? '신청 화면을 확인했어요. 현재는 프로토타입이라 메일이 저장되지는 않아요.' : '현재는 알림 신청 화면만 제공하는 프로토타입이에요.'}</small>
+            </form>
           </div>
         )}
       </div>
     </section>
-  )
-}
-
-function VirtualKeyboard({ onKey, onClose }) {
-  const rows = [
-    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-    ['⇧', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '⌫'],
-  ]
-  return (
-    <div className="virtual-keyboard" aria-label="화면 키보드">
-      <div className="suggestion-row"><span>응, 알려줘</span><span>고마워</span><span>확인했어</span></div>
-      {rows.map((row, index) => (
-        <div className="key-row" key={index}>
-          {row.map((key) => <button type="button" key={key} className={key === '⇧' || key === '⌫' ? 'key-special' : ''} onClick={() => onKey(key)}>{key}</button>)}
-        </div>
-      ))}
-      <div className="key-row key-row-bottom">
-        <button type="button" className="key-wide" onClick={() => onKey('123')}>123</button>
-        <button type="button" className="key-space" onClick={() => onKey(' ')}>space</button>
-        <button type="button" className="key-wide" onClick={onClose}>return</button>
-      </div>
-    </div>
   )
 }
 
@@ -208,8 +211,7 @@ function App() {
   const [secondChoice, setSecondChoice] = useState(null)
   const [known, setKnown] = useState(null)
   const [message, setMessage] = useState('')
-  const [sentMessages, setSentMessages] = useState([])
-  const [keyboardOpen, setKeyboardOpen] = useState(false)
+  const [sendFailed, setSendFailed] = useState(false)
   const [showQuickCheck, setShowQuickCheck] = useState(false)
 
   useEffect(() => {
@@ -225,20 +227,13 @@ function App() {
       chatBodyRef.current?.scrollTo({ top: chatBodyRef.current.scrollHeight, behavior: 'smooth' })
     })
     return () => cancelAnimationFrame(frame)
-  }, [introStep, firstChoice, secondChoice, known, sentMessages.length, keyboardOpen])
-
-  const handleKey = (key) => {
-    if (key === '⌫') setMessage((current) => current.slice(0, -1))
-    else if (key !== '⇧' && key !== '123') setMessage((current) => `${current}${key}`)
-  }
+  }, [introStep, firstChoice, secondChoice, known])
 
   const sendMessage = (event) => {
     event.preventDefault()
     const value = message.trim()
     if (!value) return
-    setSentMessages((current) => [...current.slice(-1), value])
-    setMessage('')
-    setKeyboardOpen(false)
+    setSendFailed(true)
   }
 
   const first = firstChoice ? firstChoices.find((choice) => choice.id === firstChoice.id) : null
@@ -246,7 +241,7 @@ function App() {
 
   return (
     <main className="dm-journey">
-      <div className={`dm-screen ${keyboardOpen ? 'keyboard-open' : ''}`}>
+      <div className="dm-screen">
         <header className="dm-header">
           <ChevronLeft size={24} strokeWidth={1.7} />
           <div className="profile-avatar">선</div>
@@ -288,23 +283,20 @@ function App() {
             {known && (
               <div className="scene scene-result">
                 <Bubble mine>{known.id === 'know' ? '알았어. 다시 한 번 확인할게.' : '몰랐어. 지금 알게 돼서 다행이다.'}</Bubble>
-                <Bubble>좋아. 다음엔 네 상황에 맞는 체크리스트로 이어갈게.</Bubble>
+                <Bubble>계약 전에 물어볼 것들, 여기 정리해뒀어.</Bubble>
                 <LinkPreview onOpen={() => setShowQuickCheck(true)} />
               </div>
             )}
-
-            {sentMessages.length > 0 && <div className="sent-stack">{sentMessages.map((text, index) => <Bubble mine key={`${text}-${index}`}>{text}</Bubble>)}</div>}
           </div>
         </div>
 
         <div className="chat-footer">
           <form className="chat-composer" onSubmit={sendMessage}>
             <button type="button" className="camera-button" aria-label="카메라"><Camera size={20} /></button>
-            <input value={message} onChange={(event) => setMessage(event.target.value)} onFocus={() => setKeyboardOpen(true)} inputMode="none" placeholder="메시지 보내기..." aria-label="메시지" />
+            <input type="text" value={message} onChange={(event) => { setMessage(event.target.value); setSendFailed(false) }} autoComplete="off" placeholder="메시지 보내기..." aria-label="메시지" />
             {message ? <button type="submit" className="composer-send" aria-label="메시지 보내기"><Send size={18} /></button> : <div className="composer-tools"><Mic size={18} /><ImageIcon size={18} /><Smile size={18} /></div>}
           </form>
-          {!keyboardOpen && <div className="auto-message"><i /> 자취선배와 대화 중</div>}
-          {keyboardOpen && <VirtualKeyboard onKey={handleKey} onClose={() => setKeyboardOpen(false)} />}
+          {sendFailed ? <div className="send-error">전송에 실패했어요. 체험용 채팅에서는 메시지를 보낼 수 없어요.</div> : <div className="auto-message"><i /> 자취선배와 대화 중</div>}
           <div className="home-indicator" />
         </div>
 
