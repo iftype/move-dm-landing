@@ -64,8 +64,8 @@ function LinkPreview({ onOpen }) {
         <i className="link-cover"><Check size={20} /></i>
         <span className="link-copy">
           <small>IFTYPE.GITHUB.IO</small>
-          <strong>자취선배 | 계약 전에 물어볼 것</strong>
-          <em>전입신고, 주거지원, 매물 조건을 짧게 확인해요.</em>
+          <strong>자취선배 | 내 집 보기 체크리스트</strong>
+          <em>10개만 답하면 계약 전에 확인할 항목을 골라드려요.</em>
         </span>
         <ArrowRight size={17} />
       </span>
@@ -128,6 +128,68 @@ function getQuickResults(answers) {
       keep: '파일명에 집 주소 일부와 날짜를 적고, 입주 당일에는 벽·바닥·창가를 영상으로도 남겨둬.',
     },
   ]
+}
+
+function getChecklistItems(answers) {
+  const region = answers.homeRegion === '아직 못 정했어' ? answers.userRegion : answers.homeRegion
+
+  return [
+    {
+      category: '지원·권리',
+      title: `${region || '이사할 지역'}에서 받을 수 있는 주거지원의 마감일을 확인했어?`,
+      detail: `${answers.age || '나이'}와 계약 예정일을 함께 보고, 신청 전 계약이 필요한지도 확인해.`,
+    },
+    {
+      category: '전입신고',
+      title: '전입신고와 확정일자가 가능하다는 내용을 특약에 적었어?',
+      detail: `지금 답변은 “${answers.movein || '미응답'}”. 말로 들은 내용과 계약서가 같은지 봐.`,
+    },
+    {
+      category: '보증금',
+      title: '계약하는 날 다시 발급한 등기부에서 소유자와 근저당을 확인했어?',
+      detail: `${answers.deposit || '보증금 미정'}이라도 계약 직전의 권리관계를 기준으로 확인해야 해.`,
+    },
+    {
+      category: '고정비',
+      title: '월세 밖에서 매달 빠지는 관리비 항목을 모두 적었어?',
+      detail: `${answers.rent || '월세 미정'}에 수도·전기·가스·인터넷·주차비를 더해 비교해.`,
+    },
+    {
+      category: '사진·기록',
+      title: `${answers.homeType || '집'}의 벽·천장·창틀과 옵션 상태를 사진으로 남겼어?`,
+      detail: '수리 약속은 촬영 날짜가 남는 사진과 문자, 계약서 특약으로 같이 보관해.',
+    },
+  ]
+}
+
+function ChecklistPreview({ answers }) {
+  const [checkedItems, setCheckedItems] = useState([])
+  const items = getChecklistItems(answers)
+
+  const toggleItem = (index) => {
+    setCheckedItems((value) => value.includes(index) ? value.filter((item) => item !== index) : [...value, index])
+  }
+
+  return (
+    <section className="checklist-preview" aria-labelledby="checklist-preview-title">
+      <div className="checklist-preview-heading">
+        <div><span>내 조건으로 먼저 고른 항목</span><h3 id="checklist-preview-title">다음 방에서 이 5개부터 확인해.</h3></div>
+        <strong>{checkedItems.length} / 5</strong>
+      </div>
+      <div className="personal-checklist">
+        {items.map((item, index) => {
+          const checked = checkedItems.includes(index)
+          return (
+            <button type="button" role="checkbox" aria-checked={checked} className={checked ? 'is-checked' : ''} key={item.title} onClick={() => toggleItem(index)}>
+              <i>{checked && <Check size={15} />}</i>
+              <span><small>{item.category}</small><strong>{item.title}</strong><em>{item.detail}</em></span>
+            </button>
+          )
+        })}
+      </div>
+      <p className="checklist-more"><strong>+ 19개</strong> 누수·배수·방음·옵션·계약 특약·입주 기록까지 전체 체크리스트에 이어져요.</p>
+    </section>
+  )
 }
 
 function EvidencePreview() {
@@ -230,12 +292,16 @@ function QuickCheck({ onClose }) {
             <div className="result-grid">
               {showMore && otherResults.map((item) => <article key={item.key}><div><small>{item.label}</small><strong>{item.title}</strong><p>{item.body}</p></div></article>)}
             </div>
+            <ChecklistPreview answers={answers} />
             <EvidencePreview />
             <PrototypeInfo />
-            <form className="launch-email" onSubmit={submitEmail}>
-              <label htmlFor="launch-email">서비스가 나오면 알려드릴게요</label>
-              <div><input id="launch-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setEmailSubmitted(false) }} placeholder="이메일 주소" required /><button type="submit">메일로 받기</button></div>
-              <small>{emailSubmitted ? '신청 화면을 확인했어요. 현재는 프로토타입이라 메일이 저장되지는 않아요.' : '현재는 알림 신청 화면만 제공하는 프로토타입이에요.'}</small>
+            <form className="launch-email checklist-delivery" onSubmit={submitEmail}>
+              <p>다음 집을 보기 전에</p>
+              <h3>24개 전체 체크리스트와<br />매물 비교 기록지를 받아봐.</h3>
+              <span>방을 보면서 바로 열 수 있도록 입력한 이메일로 보내드려요.</span>
+              <label htmlFor="checklist-email">받을 이메일</label>
+              <div><input id="checklist-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setEmailSubmitted(false) }} placeholder="이메일 주소" required /><button type="submit">체크리스트 받기</button></div>
+              <small>{emailSubmitted ? '체크리스트 발송 신청을 확인했어요. 현재는 프로토타입이라 실제 메일은 발송되지 않아요.' : '이메일은 체크리스트 발송 용도로만 사용한다는 흐름을 검증하고 있어요.'}</small>
             </form>
           </div>
         )}
@@ -286,7 +352,7 @@ function App() {
           <ChevronLeft size={24} strokeWidth={1.7} />
           <div className="profile-avatar">선</div>
           <div className="profile-copy"><strong>자취선배 <i /></strong><span>온라인</span></div>
-          <button type="button" className="header-site" aria-label="계약 전에 물어보기" onClick={() => setShowQuickCheck(true)}><Check size={15} /> 계약 질문</button>
+          <button type="button" className="header-site" aria-label="집 보기 체크리스트 만들기" onClick={() => setShowQuickCheck(true)}><Check size={15} /> 체크리스트</button>
         </header>
 
         <div className="dm-body" ref={chatBodyRef} aria-live="polite">
@@ -323,7 +389,7 @@ function App() {
             {known && (
               <div className="scene scene-result">
                 <Bubble mine>{known.id === 'know' ? '알았어. 다시 한 번 확인할게.' : '몰랐어. 지금 알게 돼서 다행이다.'}</Bubble>
-                <Bubble>계약 전에 물어볼 것들, 여기 정리해뒀어.</Bubble>
+                <Bubble>내 조건에 맞는 집 보기 체크리스트, 여기서 만들어줄게.</Bubble>
                 <LinkPreview onOpen={() => setShowQuickCheck(true)} />
               </div>
             )}
