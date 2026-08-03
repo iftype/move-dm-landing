@@ -221,6 +221,113 @@ function PrototypeInfo() {
   )
 }
 
+const housingFacts = [
+  {
+    category: '청년월세',
+    title: '만 29세라고 청년월세 지원을 받는 건 아니야.',
+    body: '나이뿐 아니라 부모와 따로 사는지, 무주택인지, 청년가구·원가구의 소득과 재산, 기존 지원 수혜 여부를 함께 확인해.',
+    sources: [{ label: '마이홈 청년월세지원 자가진단', href: 'https://www.myhome.go.kr/hws/portal/dgn/selectSelfDiagnosisYouthHousView.do' }],
+  },
+  {
+    category: '가족 간 임차',
+    title: '부모님이나 형제자매 집에 월세를 내도 제외될 수 있어.',
+    body: '국가 청년월세 지원 자가진단은 직계존속과 형제·자매 등 2촌 이내 혈족의 주택을 임차한 경우를 제외 대상으로 안내해.',
+    sources: [{ label: '마이홈 제외대상 확인', href: 'https://www.myhome.go.kr/hws/portal/dgn/selectSelfDiagnosisYouthHousView.do' }],
+  },
+  {
+    category: '지역 지원',
+    title: '국가 지원에서 탈락했다고 끝은 아니야.',
+    body: '지자체가 별도의 월세·주거비 지원을 운영할 수 있어. 현재 거주 지역과 이사할 지역의 공고를 각각 다시 확인해봐.',
+    sources: [{ label: '마이홈 지자체 지원사업 현황', href: 'https://www.myhome.go.kr/hws/portal/dgn/selectSelfDiagnosisYouthHousView.do' }],
+  },
+  {
+    category: '셰어하우스',
+    title: '셰어하우스라도 별도 계약이면 가능성이 남아 있어.',
+    body: '한 방에 여러 명이 거주하는 전대차는 원칙적으로 제외되지만, 각자가 임대인과 별도 임대차계약을 맺은 경우는 지원 가능 대상으로 안내돼.',
+    sources: [{ label: '마이홈 임차계약 제외·예외 조건', href: 'https://www.myhome.go.kr/hws/portal/dgn/selectSelfDiagnosisYouthHousView.do' }],
+  },
+  {
+    category: '실제 주거비',
+    title: '월세 50만 원이 정말 더 저렴한지 다시 계산해봐.',
+    body: '보증금 1억 원을 연 3%로 빌린다고 가정하면 이자만 월 약 25만 원이야. 대출 가능 여부, 보증료, 관리비와 보증금 반환 위험까지 더해야 실제 비용이 보여.',
+    note: '계산 예시: 1억 원 × 연 3% ÷ 12개월 = 월 25만 원',
+    sources: [],
+  },
+  {
+    category: '관리비',
+    title: '월세만 보고 계약하면 관리비에서 예산이 무너질 수 있어.',
+    body: '월 10만 원 이상의 정액 관리비는 인터넷 광고에서 일반관리비·전기·수도·가스·난방·인터넷 등을 비목별로 표시하는 것이 원칙이야. 그래도 최근 고지서와 별도 공과금은 직접 확인해.',
+    sources: [{ label: '중개대상물 표시·광고 세부기준', href: 'https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000250356&chrClsCd=010201' }],
+  },
+  {
+    category: '전입신고',
+    title: '전입신고가 안 되는 방은 주소만의 문제가 아니야.',
+    body: '주택을 인도받고 주민등록을 마쳐야 다음 날부터 제삼자에 대한 대항력이 생겨. 계약서 주소와 주민등록 주소가 다르면 월세액 세액공제도 받을 수 없어.',
+    sources: [
+      { label: '주택임대차보호법 제3조', href: 'https://law.go.kr/LSW/LsiJoLinkP.do?docType=JO&joNo=000600000&languageType=KO&lsNm=%EC%A3%BC%ED%83%9D%EC%9E%84%EB%8C%80%EC%B0%A8%EB%B3%B4%ED%98%B8%EB%B2%95&paras=1' },
+      { label: '국세청 월세액 세액공제 안내', href: 'https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=239025&mi=40613' },
+    ],
+  },
+  {
+    category: '확정일자',
+    title: '확정일자만 받는다고 우선변제권이 완성되지는 않아.',
+    body: '우선변제권은 실제 입주, 주민등록, 임대차계약서의 확정일자를 함께 갖춰야 해. 하나만 챙기고 끝내지 마.',
+    sources: [{ label: '주택임대차보호법과 판례', href: 'https://www.law.go.kr/LSW/precInfoP.do?precSeq=129685' }],
+  },
+  {
+    category: '건축물 용도',
+    title: '광고는 원룸인데 건축물대장은 근린생활시설일 수 있어.',
+    body: 'HUG는 근린생활시설을 전세보증금반환보증 대상 주택에서 제외해. 광고의 이름보다 건축물대장상 용도를 먼저 확인해.',
+    sources: [{ label: 'HUG 전세보증반환 상품 안내', href: 'https://onestop.khug.or.kr/webView/webBiz/apply/goods001' }],
+  },
+  {
+    category: '연말정산',
+    title: '반전세의 대출 공제와 월세 공제, 무조건 하나만 고르는 건 아니야.',
+    body: '주택임차차입금 원리금 상환액 소득공제와 월세액 세액공제는 각각의 무주택·소득·주택·전입 요건을 충족하면 함께 적용될 수 있어. 해당 귀속연도 국세청 안내로 다시 확인해.',
+    sources: [
+      { label: '국세청 주택임차차입금 안내', href: 'https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=239021&mi=40629' },
+      { label: '국세청 월세액 세액공제 안내', href: 'https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=239025&mi=40613' },
+    ],
+  },
+]
+
+function HousingFacts() {
+  return (
+    <section className="housing-facts">
+      <p className="section-kicker">계약 전에 알았으면 달라지는 것</p>
+      <h3>나이와 월세만 보고는<br />판단할 수 없는 10가지.</h3>
+      <p className="housing-facts-intro">모두 외울 필요는 없어. 내 상황과 가까운 질문부터 열어보고, 계약 전에는 공식 출처에서 한 번 더 확인해.</p>
+      <div className="fact-list">
+        {housingFacts.map((fact, index) => (
+          <details key={fact.title} open={index === 0}>
+            <summary><span>{fact.category}</span><strong>{fact.title}</strong></summary>
+            <div className="fact-body">
+              <p>{fact.body}</p>
+              {fact.note && <code>{fact.note}</code>}
+              {fact.sources.length > 0 && <div className="fact-sources">{fact.sources.map((source) => <a key={source.href} href={source.href} target="_blank" rel="noreferrer">{source.label} ↗</a>)}</div>}
+            </div>
+          </details>
+        ))}
+      </div>
+      <p className="fact-disclaimer">자취선배는 지원 자격, 법적 안전, 보증 가입 또는 세액공제 가능 여부를 확정하지 않아요. 실제 신청·계약 전에는 최신 공고와 공식 기관 안내를 확인하세요.</p>
+    </section>
+  )
+}
+
+function ProjectDirection() {
+  return (
+    <section className="project-direction">
+      <p className="section-kicker">우리가 만드는 방식</p>
+      <h3>기능 수보다,<br />실제로 쓰는 이유부터 확인합니다.</h3>
+      <div className="project-levels">
+        <article><span>레벨 3</span><strong>사용 이유가 분명한 MVP</strong><p>핵심 문제를 먼저 해결하고, 외부 사용자의 인터뷰와 테스트로 실제 문제인지 확인해요. 공개 가능한 사용 흐름과 안정성을 갖추고 설계·기술 선택의 근거를 기록합니다.</p></article>
+        <article><span>레벨 4</span><strong>사용자 반응으로 운영·개선</strong><p>서비스가 필요한 곳에 직접 알리고, 사용자가 다시 찾을 이유를 만들어요. 실제 반응을 바탕으로 제품과 시스템을 함께 개선합니다.</p></article>
+      </div>
+      <p className="project-outcome">문제 발견 → 개발 → 배포 → 운영 → 개선까지, 실제 사용자가 있는 서비스의 경험을 남기는 것이 목표예요.</p>
+    </section>
+  )
+}
+
 function QuickCheck({ onClose }) {
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState({})
@@ -294,7 +401,9 @@ function QuickCheck({ onClose }) {
             </div>
             <ChecklistPreview answers={answers} />
             <EvidencePreview />
+            <HousingFacts />
             <PrototypeInfo />
+            <ProjectDirection />
             <form className="launch-email checklist-delivery" onSubmit={submitEmail}>
               <p>다음 집을 보기 전에</p>
               <h3>24개 전체 체크리스트와<br />매물 비교 기록지를 받아봐.</h3>

@@ -186,6 +186,25 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .evidence-registry { background: #f8f8f5; }
 .evidence-registry::after { content: '확인'; position: absolute; right: 10px; bottom: 9px; width: 27px; height: 27px; display: grid; place-items: center; color: #5469d1; border: 1px solid #aeb8eb; border-radius: 50%; font-size: 7px; }
 .evidence-preview figcaption { grid-column: 1 / -1; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.section-kicker { margin: 0 0 9px; color: var(--blue); font-size: 10px; font-weight: 800; }
+.housing-facts { margin-top: 64px; padding-top: 36px; border-top: 1px solid var(--line); }
+.housing-facts > h3, .project-direction > h3 { margin: 0; color: var(--text); font-size: clamp(25px, 4vw, 38px); line-height: 1.2; letter-spacing: -.055em; }
+.housing-facts-intro { max-width: 640px; margin: 14px 0 30px; color: #666b68; font-size: 12px; line-height: 1.7; }
+.fact-list { border-top: 1px solid var(--line); }
+.fact-list details { border-bottom: 1px solid var(--line); }
+.fact-list summary { min-height: 78px; padding: 18px 38px 18px 2px; position: relative; display: grid; grid-template-columns: 110px 1fr; align-items: center; gap: 18px; cursor: pointer; list-style: none; }
+.fact-list summary::-webkit-details-marker { display: none; }
+.fact-list summary::after { content: '+'; width: 24px; height: 24px; position: absolute; right: 2px; top: 50%; display: grid; place-items: center; color: var(--blue); border: 1px solid var(--line); border-radius: 50%; transform: translateY(-50%); transition: transform .2s, color .2s, background .2s; }
+.fact-list details[open] summary::after { color: white; background: var(--blue); border-color: var(--blue); transform: translateY(-50%) rotate(45deg); }
+.fact-list summary span { color: var(--blue); font-size: 9px; font-weight: 800; }
+.fact-list summary strong { font-size: 14px; line-height: 1.5; letter-spacing: -.035em; }
+.fact-body { padding: 0 38px 22px 130px; animation: factIn .24s ease both; }
+.fact-body > p { max-width: 610px; margin: 0; color: #656e75; font-size: 12px; line-height: 1.75; }
+.fact-body code { display: inline-block; margin-top: 13px; padding: 8px 10px; color: var(--text); background: var(--blue-soft); border-radius: 5px; font: 10px 'DM Mono', monospace; }
+.fact-sources { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 7px 14px; }
+.fact-sources a { color: var(--blue); font-size: 9px; font-weight: 700; text-decoration: none; }
+.fact-sources a:hover { text-decoration: underline; }
+.fact-disclaimer { margin: 20px 0 0; padding-left: 14px; color: var(--muted); border-left: 3px solid var(--aqua-gray); font-size: 9px; line-height: 1.65; }
 .more-results { margin: 0 0 20px; min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; gap: 6px; color: white; background: var(--blue); border: 0; border-radius: 6px; font-size: 12px; font-weight: 800; }
 .more-results:hover { background: #476da4; }
 .more-results svg { transform: rotate(-90deg); transition: transform .2s; }
@@ -206,6 +225,14 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .prototype-next { padding: 20px 22px; background: var(--dusky-citron); border-radius: 8px; }
 .prototype-next strong { font-size: 15px; letter-spacing: -.035em; }
 .prototype-next p { margin: 7px 0 0; color: #5e594b; font-size: 11px; line-height: 1.6; }
+.project-direction { margin-top: 64px; padding-top: 36px; border-top: 1px solid var(--line); }
+.project-levels { margin-top: 28px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.project-levels article { min-height: 190px; padding: 24px 26px 26px 2px; display: flex; flex-direction: column; align-items: flex-start; }
+.project-levels article + article { padding-left: 28px; border-left: 1px solid var(--line); }
+.project-levels span { color: var(--blue); font-size: 9px; font-weight: 800; }
+.project-levels strong { margin-top: 8px; font-size: 16px; letter-spacing: -.04em; }
+.project-levels p { margin: 12px 0 0; color: #656e75; font-size: 11px; line-height: 1.7; }
+.project-outcome { margin: 22px 0 0; padding: 18px 20px; color: #5e594b; background: var(--dusky-citron); border-radius: 8px; font-size: 11px; font-weight: 700; line-height: 1.65; }
 .launch-email { margin-top: 42px; padding-top: 28px; border-top: 1px solid var(--line); }
 .launch-email label { display: block; margin-bottom: 12px; color: var(--text); font-size: 17px; font-weight: 800; letter-spacing: -.035em; }
 .launch-email > div { max-width: 520px; height: 48px; display: flex; gap: 8px; }
@@ -296,6 +323,7 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 @keyframes nudge { 50% { transform: translateY(4px); } }
 @keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(82,220,131,0); } }
 @keyframes introPageIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+@keyframes factIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
 
 @media (max-width: 780px) {
   .dm-header { height: 72px; padding-inline: 14px; gap: 9px; }
@@ -359,11 +387,24 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .evidence-paper::before { top: 28px; left: 8px; }
   .evidence-paper small, .evidence-paper i, .evidence-photo span { font-size: 6px; }
   .evidence-preview figcaption { font-size: 7px; }
+  .housing-facts { margin-top: 48px; padding-top: 30px; }
+  .housing-facts > h3, .project-direction > h3 { font-size: 27px; }
+  .housing-facts-intro { margin-bottom: 24px; font-size: 11px; }
+  .fact-list summary { min-height: 86px; padding: 16px 35px 16px 0; grid-template-columns: 1fr; gap: 4px; }
+  .fact-list summary strong { font-size: 13px; }
+  .fact-body { padding: 0 4px 20px; }
+  .fact-body > p { font-size: 11px; }
+  .fact-body code { font-size: 8px; line-height: 1.55; }
   .prototype-info { margin-top: 44px; padding-top: 28px; }
   .prototype-info h3 { font-size: 20px; }
   .prototype-info ul { grid-template-columns: 1fr; }
   .prototype-info li { min-height: 82px; }
   .prototype-next { padding: 18px; }
+  .project-direction { margin-top: 48px; padding-top: 30px; }
+  .project-levels { grid-template-columns: 1fr; }
+  .project-levels article { min-height: 0; padding: 20px 0; }
+  .project-levels article + article { padding-left: 0; border-top: 1px solid var(--line); border-left: 0; }
+  .project-outcome { padding: 17px; }
   .launch-email { margin-top: 34px; padding-top: 24px; }
   .launch-email label { font-size: 15px; }
   .launch-email > div { height: 46px; gap: 6px; }
