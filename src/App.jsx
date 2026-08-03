@@ -32,11 +32,10 @@ function Typing() {
   return <div className="typing" aria-label="입력 중"><i /><i /><i /></div>
 }
 
-function ChoiceGroup({ eyebrow, title, choices, selectedId, onSelect }) {
+function ChoiceGroup({ title, choices, selectedId, onSelect }) {
   return (
     <div className="reply-choices">
       <div className="reply-choices-heading">
-        <span>{eyebrow}</span>
         <strong>{title}</strong>
       </div>
       <div className="reply-choice-list">
@@ -84,6 +83,7 @@ const quickQuestions = [
 const quickResults = [
   {
     key: 'movein',
+    label: '계약 전에 추가로 확인할 매물 조건',
     title: '전입신고, 말로만 듣고 넘기지 마.',
     body: '가능하다는 답을 받으면 계약서 특약에도 같은 내용이 들어가는지 확인해.',
     ask: '“전입신고와 확정일자가 가능한 집인지 계약서 특약에 적어주실 수 있을까요?”',
@@ -91,6 +91,7 @@ const quickResults = [
   },
   {
     key: 'support',
+    label: '확인해볼 주거지원',
     title: '지원금은 집 계약 전에 한 번 찾아봐.',
     body: '지역과 신청 시기에 따라 이사비나 중개보수 지원 조건이 달라질 수 있어.',
     ask: '“이 집으로 계약하면 신청할 수 있는 청년 주거지원이 있을까요?”',
@@ -98,6 +99,7 @@ const quickResults = [
   },
   {
     key: 'condition',
+    label: '중개인이나 집주인에게 물어볼 질문',
     title: '수리 얘기는 집 볼 때 바로 꺼내.',
     body: '누수나 곰팡이처럼 눈에 보이는 하자는 입주 전에 누가 수리할지 정해두는 게 좋아.',
     ask: '“지금 보이는 하자는 입주 전에 어디까지 수리해주시나요?”',
@@ -105,6 +107,7 @@ const quickResults = [
   },
   {
     key: 'record',
+    label: '계약과 입주 때 보관할 서류와 기록',
     title: '서류와 사진은 한 폴더에 모아둬.',
     body: '계약서, 등기부, 집 상태 사진을 흩어두면 막상 필요할 때 찾기 어려워.',
     ask: '“계약 전에 최신 등기부와 관리비 내역도 볼 수 있을까요?”',
@@ -121,6 +124,23 @@ function EvidencePreview() {
       <div className="evidence-paper evidence-registry"><small>등기부 예시</small><strong>근저당 확인</strong><i>갑구 · 을구</i></div>
       <figcaption>개인정보를 가린 예시예요. 계약 전에 이 세 가지를 같이 남겨둬.</figcaption>
     </figure>
+  )
+}
+
+function PrototypeInfo() {
+  return (
+    <section className="prototype-info">
+      <h3>자취선배가 같이 확인하는 것</h3>
+      <p>나이·지역·주거지원 경험과 보고 있는 집의 지역·보증금·월세·전입신고 가능 여부·주택 유형을 함께 살펴봐요.</p>
+      <ul>
+        <li><Check size={16} /><span><strong>확인해볼 주거지원</strong><small>지역과 신청 시기에 맞는 지원부터 확인해요.</small></span></li>
+        <li><Check size={16} /><span><strong>계약 전에 추가로 확인할 매물 조건</strong><small>전입신고와 계약서 특약을 놓치지 않게 정리해요.</small></span></li>
+        <li><Check size={16} /><span><strong>중개인이나 집주인에게 물어볼 질문</strong><small>그 자리에서 그대로 읽고 물어볼 수 있게 준비해요.</small></span></li>
+        <li><Check size={16} /><span><strong>계약과 입주 때 보관할 서류와 기록</strong><small>계약서·등기부·사진과 대화를 한곳에 남겨요.</small></span></li>
+      </ul>
+      <p className="prototype-note">이 안내를 보기 전후로 새롭게 알게 된 지원과 확인 조건, 질문과 기록이 실제로 달라지는지 확인하고 있어요.</p>
+      <div className="prototype-next"><strong>집을 보러 가는 날에도 이어져요</strong><p>다음에는 현장에서 확인한 내용과 사진·메모를 한 번에 남기는 흐름까지 준비할 예정이에요.</p></div>
+    </section>
   )
 }
 
@@ -180,6 +200,7 @@ function QuickCheck({ onClose }) {
           </>
         ) : (
           <div className="quick-result">
+            <p className="result-category">{priority.label}</p>
             <h2>{priority.title}</h2>
             <p className="quick-scope">{priority.body}</p>
             <div className="say-this">
@@ -188,10 +209,11 @@ function QuickCheck({ onClose }) {
               <p>{priority.keep}</p>
             </div>
             <div className="result-grid">
-              {showMore && otherResults.map((item) => <article key={item.key}><div><strong>{item.title}</strong><p>{item.body}</p></div></article>)}
+              {showMore && otherResults.map((item) => <article key={item.key}><div><small>{item.label}</small><strong>{item.title}</strong><p>{item.body}</p></div></article>)}
             </div>
             <EvidencePreview />
             <button type="button" className="more-results" onClick={() => setShowMore((value) => !value)}>{showMore ? '여기까지만 볼게' : '이것도 같이 확인해봐'} <ChevronLeft size={14} className={showMore ? 'is-open' : ''} /></button>
+            <PrototypeInfo />
             <form className="launch-email" onSubmit={submitEmail}>
               <label htmlFor="launch-email">서비스가 나오면 알려드릴게요</label>
               <div><input id="launch-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); setEmailSubmitted(false) }} placeholder="이메일 주소" required /><button type="submit">메일로 받기</button></div>
@@ -258,7 +280,7 @@ function App() {
                 <p className="scene-date">오늘 오전 9:41</p>
                 <Bubble>8월에 이사해?</Bubble>
                 <Bubble>계약 전에 두 가지만 같이 확인해도 될까?</Bubble>
-                {!firstChoice && <ChoiceGroup eyebrow="첫 번째 질문" title="지금 이사 상황은 어때?" choices={firstChoices} onSelect={setFirstChoice} />}
+                {!firstChoice && <ChoiceGroup title="지금 이사 상황은 어때?" choices={firstChoices} onSelect={setFirstChoice} />}
               </div>
             )}
 
@@ -267,7 +289,7 @@ function App() {
                 <Bubble mine>{first.label}</Bubble>
                 <Bubble wide>{first.info}</Bubble>
                 <Bubble>그럼 이번엔 이 중에서 골라봐.</Bubble>
-                {!secondChoice && <ChoiceGroup eyebrow="두 번째 질문" title="지금 가장 걱정되는 건?" choices={secondChoices} onSelect={setSecondChoice} />}
+                {!secondChoice && <ChoiceGroup title="지금 가장 걱정되는 건?" choices={secondChoices} onSelect={setSecondChoice} />}
               </div>
             )}
 
@@ -276,7 +298,7 @@ function App() {
                 <Bubble mine>{second.label}</Bubble>
                 <Bubble wide>{second.info}</Bubble>
                 <Bubble>이 내용, 알고 있었어?</Bubble>
-                {!known && <ChoiceGroup eyebrow="마지막 확인" title="이사 전에 알고 있었어?" choices={[{ id: 'know', label: '알았어', info: '' }, { id: 'didnt-know', label: '몰랐어', info: '' }]} onSelect={setKnown} />}
+                {!known && <ChoiceGroup title="이사 전에 알고 있었어?" choices={[{ id: 'know', label: '알았어', info: '' }, { id: 'didnt-know', label: '몰랐어', info: '' }]} onSelect={setKnown} />}
               </div>
             )}
 
