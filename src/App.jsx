@@ -130,16 +130,16 @@ function EvidencePreview() {
 function PrototypeInfo() {
   return (
     <section className="prototype-info">
-      <h3>자취선배가 같이 확인하는 것</h3>
-      <p>나이·지역·주거지원 경험과 보고 있는 집의 지역·보증금·월세·전입신고 가능 여부·주택 유형을 함께 살펴봐요.</p>
+      <h3>지금 무엇을 검증하고 있나요?</h3>
+      <p>첫 검증 범위는 <strong>계약 전 주거지원과 매물 조건 확인</strong>입니다. 나이·지역·주거지원 경험과 매물의 지역·보증금·월세·전입신고 가능 여부·주택 유형을 함께 확인해요.</p>
       <ul>
         <li><Check size={16} /><span><strong>확인해볼 주거지원</strong><small>지역과 신청 시기에 맞는 지원부터 확인해요.</small></span></li>
         <li><Check size={16} /><span><strong>계약 전에 추가로 확인할 매물 조건</strong><small>전입신고와 계약서 특약을 놓치지 않게 정리해요.</small></span></li>
         <li><Check size={16} /><span><strong>중개인이나 집주인에게 물어볼 질문</strong><small>그 자리에서 그대로 읽고 물어볼 수 있게 준비해요.</small></span></li>
         <li><Check size={16} /><span><strong>계약과 입주 때 보관할 서류와 기록</strong><small>계약서·등기부·사진과 대화를 한곳에 남겨요.</small></span></li>
       </ul>
-      <p className="prototype-note">이 안내를 보기 전후로 새롭게 알게 된 지원과 확인 조건, 질문과 기록이 실제로 달라지는지 확인하고 있어요.</p>
-      <div className="prototype-next"><strong>집을 보러 가는 날에도 이어져요</strong><p>다음에는 현장에서 확인한 내용과 사진·메모를 한 번에 남기는 흐름까지 준비할 예정이에요.</p></div>
+      <p className="prototype-note">프로토타입 사용 전후로 새롭게 발견한 지원, 확인 조건, 질문과 기록이 실제로 달라지는지 외부 사용자에게 확인하고 있어요.</p>
+      <div className="prototype-next"><strong>다음은 집 보기 현장의 기록이에요</strong><p>이 결과를 바탕으로 현장에서 확인한 내용과 사진·메모를 남기는 흐름으로 확장하려 해요.</p></div>
     </section>
   )
 }
