@@ -74,46 +74,61 @@ function LinkPreview({ onOpen }) {
 }
 
 const quickQuestions = [
+  { key: 'age', label: '나이는 어느 쪽에 가까워?', options: ['만 19–24세', '만 25–29세', '만 30–34세', '만 35세 이상'] },
+  { key: 'userRegion', label: '지금 살고 있는 지역은 어디야?', options: ['서울', '경기·인천', '그 외 지역'] },
   { key: 'support', label: '혹시 청년 지원금, 받아본 적 있어?', options: ['아직 한 번도 없어', '예전에 받아봤어', '뭐가 있는지 모르겠어'] },
-  { key: 'home', label: '지금 보는 집, 지역이 어디야?', options: ['서울·수도권', '광역시', '아직 못 정했어'] },
-  { key: 'budget', label: '보증금이랑 월세는 어느 정도야?', options: ['보증금 1천 / 월세 60 이하', '보증금 3천 / 월세 80 이하', '아직 정하는 중'] },
+  { key: 'homeRegion', label: '지금 보는 집, 지역이 어디야?', options: ['서울', '경기·인천', '그 외 지역', '아직 못 정했어'] },
+  { key: 'deposit', label: '보증금은 어느 정도야?', options: ['1천만 원 이하', '1천–5천만 원', '5천만 원 이상', '아직 정하는 중'] },
+  { key: 'rent', label: '월세는 어느 정도야?', options: ['50만 원 이하', '50–80만 원', '80만 원 이상', '아직 정하는 중'] },
   { key: 'movein', label: '전입신고 된다고 집주인이 말했어?', options: ['된다고 들었어', '아직 안 물어봤어', '안 된다고 했어'] },
+  { key: 'homeType', label: '보려는 집은 어떤 형태야?', options: ['원룸·투룸', '오피스텔', '다가구·다세대', '아직 모르겠어'] },
+  { key: 'moveTiming', label: '계약이나 이사는 언제쯤이야?', options: ['2주 안', '한 달 안', '두 달 이후', '아직 정하지 않았어'] },
+  { key: 'concern', label: '지금 제일 먼저 알고 싶은 건?', options: ['받을 수 있는 주거지원', '이 집에서 더 볼 조건', '중개인에게 물어볼 말', '꼭 남겨둘 서류와 기록'] },
 ]
 
-const quickResults = [
-  {
-    key: 'movein',
-    label: '계약 전에 추가로 확인할 매물 조건',
-    title: '전입신고, 말로만 듣고 넘기지 마.',
-    body: '가능하다는 답을 받으면 계약서 특약에도 같은 내용이 들어가는지 확인해.',
-    ask: '“전입신고와 확정일자가 가능한 집인지 계약서 특약에 적어주실 수 있을까요?”',
-    keep: '답변은 문자나 메신저로 받아서 계약서와 같이 보관해둬.',
-  },
-  {
-    key: 'support',
-    label: '확인해볼 주거지원',
-    title: '지원금은 집 계약 전에 한 번 찾아봐.',
-    body: '지역과 신청 시기에 따라 이사비나 중개보수 지원 조건이 달라질 수 있어.',
-    ask: '“이 집으로 계약하면 신청할 수 있는 청년 주거지원이 있을까요?”',
-    keep: '거주 지역 청년정책 페이지와 접수 마감일을 캡처해둬.',
-  },
-  {
-    key: 'condition',
-    label: '중개인이나 집주인에게 물어볼 질문',
-    title: '수리 얘기는 집 볼 때 바로 꺼내.',
-    body: '누수나 곰팡이처럼 눈에 보이는 하자는 입주 전에 누가 수리할지 정해두는 게 좋아.',
-    ask: '“지금 보이는 하자는 입주 전에 어디까지 수리해주시나요?”',
-    keep: '하자 사진, 촬영 날짜, 수리하기로 한 대화를 같이 남겨둬.',
-  },
-  {
-    key: 'record',
-    label: '계약과 입주 때 보관할 서류와 기록',
-    title: '서류와 사진은 한 폴더에 모아둬.',
-    body: '계약서, 등기부, 집 상태 사진을 흩어두면 막상 필요할 때 찾기 어려워.',
-    ask: '“계약 전에 최신 등기부와 관리비 내역도 볼 수 있을까요?”',
-    keep: '계약 전·입주 당일 폴더를 나눠서 원본 파일을 보관해둬.',
-  },
-]
+function getQuickResults(answers) {
+  const region = answers.homeRegion === '아직 못 정했어' ? answers.userRegion : answers.homeRegion
+  const listing = [region, answers.homeType].filter(Boolean).join(' · ')
+
+  return [
+    {
+      key: 'support',
+      label: '확인해볼 주거지원',
+      title: `${region || '이사할 지역'} 지원은 계약 전에 다시 찾아봐.`,
+      body: `${answers.age || '나이'}와 ${region || '지역'}을 기준으로 이사비·중개보수·월세 지원의 신청 시기와 소득 조건을 먼저 확인해.`,
+      actionLabel: '먼저 확인해',
+      ask: '거주 지역 청년정책 페이지에서 나이, 소득, 계약일 조건을 같이 보기',
+      keep: `지원 경험은 “${answers.support || '미응답'}”. 지원 이름과 접수 마감일을 캡처해둬.`,
+    },
+    {
+      key: 'condition',
+      label: '계약 전에 추가로 확인할 매물 조건',
+      title: `${listing || '이 집'} 조건, 말로만 듣고 넘기지 마.`,
+      body: `보증금 ${answers.deposit || '미정'}, 월세 ${answers.rent || '미정'} 기준이야. 전입신고 답변과 실제 계약서 특약이 같은지 확인해.`,
+      actionLabel: '계약 전에 물어봐',
+      ask: '“전입신고와 확정일자가 가능한 집인지 계약서 특약에 적어주실 수 있을까요?”',
+      keep: `현재 답변은 “${answers.movein || '미응답'}”. 최신 등기부와 건축물대장도 계약 전에 다시 확인해.`,
+    },
+    {
+      key: 'question',
+      label: '중개인이나 집주인에게 물어볼 질문',
+      title: '수리와 관리비 얘기는 집 볼 때 바로 꺼내.',
+      body: `${listing || '보고 있는 집'}에서 눈에 보이는 하자, 관리비 포함 항목, 퇴실 조건을 그 자리에서 물어보는 게 좋아.`,
+      actionLabel: '그대로 물어봐',
+      ask: '“지금 보이는 하자는 언제까지 수리되고, 관리비에는 어떤 항목이 포함되나요?”',
+      keep: '답변은 문자나 메신저로 다시 받아서 집 사진과 같이 남겨둬.',
+    },
+    {
+      key: 'record',
+      label: '계약과 입주 때 보관할 서류와 기록',
+      title: `${answers.moveTiming || '계약 전'}부터 한 폴더에 모아둬.`,
+      body: '계약서, 등기부, 집 상태 사진과 주고받은 대화를 흩어두면 막상 필요할 때 찾기 어려워.',
+      actionLabel: '이렇게 남겨',
+      ask: '계약 전 · 계약 당일 · 입주 당일 폴더를 만들고 원본 파일 넣기',
+      keep: '파일명에 집 주소 일부와 날짜를 적고, 입주 당일에는 벽·바닥·창가를 영상으로도 남겨둬.',
+    },
+  ]
+}
 
 function EvidencePreview() {
   return (
@@ -152,13 +167,15 @@ function QuickCheck({ onClose }) {
   const [emailSubmitted, setEmailSubmitted] = useState(false)
   const current = quickQuestions[step]
   const complete = step >= quickQuestions.length
-  const priorityKey = answers.movein !== '된다고 들었어'
-    ? 'movein'
-    : answers.support !== '예전에 받아봤어'
-      ? 'support'
-      : answers.budget === '아직 정하는 중'
-        ? 'condition'
-        : 'record'
+  const quickResults = getQuickResults(answers)
+  const concernPriority = {
+    '받을 수 있는 주거지원': 'support',
+    '이 집에서 더 볼 조건': 'condition',
+    '중개인에게 물어볼 말': 'question',
+    '꼭 남겨둘 서류와 기록': 'record',
+  }
+  const priorityKey = concernPriority[answers.concern]
+    || (answers.movein !== '된다고 들었어' ? 'condition' : answers.support !== '예전에 받아봤어' ? 'support' : 'record')
   const priority = quickResults.find((item) => item.key === priorityKey)
   const otherResults = quickResults.filter((item) => item.key !== priorityKey)
 
@@ -200,19 +217,20 @@ function QuickCheck({ onClose }) {
           </>
         ) : (
           <div className="quick-result">
+            <p className="result-context">{answers.age} · {answers.homeRegion} · {answers.homeType} · {answers.moveTiming}</p>
             <p className="result-category">{priority.label}</p>
             <h2>{priority.title}</h2>
             <p className="quick-scope">{priority.body}</p>
             <div className="say-this">
-              <span>그대로 물어봐</span>
+              <span>{priority.actionLabel}</span>
               <blockquote>{priority.ask}</blockquote>
               <p>{priority.keep}</p>
             </div>
+            <button type="button" className="more-results" onClick={() => setShowMore((value) => !value)}>{showMore ? '중요한 한 가지만 볼게' : '내 조건에 맞는 큐레이션 더 받기'} <ChevronLeft size={14} className={showMore ? 'is-open' : ''} /></button>
             <div className="result-grid">
               {showMore && otherResults.map((item) => <article key={item.key}><div><small>{item.label}</small><strong>{item.title}</strong><p>{item.body}</p></div></article>)}
             </div>
             <EvidencePreview />
-            <button type="button" className="more-results" onClick={() => setShowMore((value) => !value)}>{showMore ? '여기까지만 볼게' : '이것도 같이 확인해봐'} <ChevronLeft size={14} className={showMore ? 'is-open' : ''} /></button>
             <PrototypeInfo />
             <form className="launch-email" onSubmit={submitEmail}>
               <label htmlFor="launch-email">서비스가 나오면 알려드릴게요</label>
