@@ -109,6 +109,7 @@ const quickResults = [
 function EvidencePreview() {
   return (
     <figure className="evidence-preview">
+      <div className="evidence-heading"><strong>계약 전에 남길 것</strong><span>사진 · 계약서 · 등기부</span></div>
       <div className="evidence-photo" role="img" aria-label="입주 전 방 내부를 촬영한 예시 사진"><span>집 보러 간 날</span><b>창가 누수 흔적</b></div>
       <div className="evidence-paper evidence-contract"><small>계약서 예시</small><strong>전입신고 가능</strong><i>특약 03</i></div>
       <div className="evidence-paper evidence-registry"><small>등기부 예시</small><strong>근저당 확인</strong><i>갑구 · 을구</i></div>
@@ -250,7 +251,7 @@ function App() {
           <ChevronLeft size={24} strokeWidth={1.7} />
           <div className="profile-avatar">선</div>
           <div className="profile-copy"><strong>자취선배 <i /></strong><span>온라인</span></div>
-          <button type="button" className="header-site" onClick={() => setShowQuickCheck(true)}><Check size={15} /> 계약 전에 물어보기</button>
+          <button type="button" className="header-site" aria-label="계약 전에 물어보기" onClick={() => setShowQuickCheck(true)}><Check size={15} /> 계약 질문</button>
         </header>
 
         <div className="dm-body" ref={chatBodyRef} aria-live="polite">
